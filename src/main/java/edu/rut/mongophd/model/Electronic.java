@@ -1,6 +1,7 @@
 package edu.rut.mongophd.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,14 +13,16 @@ import java.util.List;
 
 @Document(collection = "store")
 @Data
+@NoArgsConstructor
 public class Electronic {
 
     @Id
     private String id;
     @Field(name = "name")
-    @Indexed(unique = false, sparse = true, direction = IndexDirection.ASCENDING, background = false)
+    @Indexed(sparse = true, direction = IndexDirection.ASCENDING, background = false)
     private String name;
 
+    @Indexed(sparse = true, direction = IndexDirection.ASCENDING, background = false)
     @Field(name = "brand")
     private String brand;
 
