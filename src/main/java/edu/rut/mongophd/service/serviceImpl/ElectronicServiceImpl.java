@@ -56,14 +56,14 @@ public class ElectronicServiceImpl implements ElectronicService {
     public Page<ElectronicDto> getByAvailability(int page, int no, boolean isAvailable) {
         Pageable sortedByName = PageRequest.of(page, no, Sort.by("name").ascending());
         Page<Electronic> electronicPage = electronicRepository.getByAvailability(isAvailable, sortedByName);
-        return electronicMapper.pageElectronicsToDto(electronicPage);
+        return electronicPage.map(electronicMapper::entityToDto);
     }
 
     @Override
     public Page<ElectronicDto> getByCountry(int page, int no, String country) {
         Pageable sortedByName = PageRequest.of(page, no, Sort.by("country").ascending());
         Page<Electronic> electronicPage = electronicRepository.getByCountryProducer(country, sortedByName);
-        return electronicMapper.pageElectronicsToDto(electronicPage);
+        return electronicPage.map(electronicMapper::entityToDto);
     }
 
     @Override

@@ -11,6 +11,6 @@ import java.util.List;
 public interface ElectronicMapper {
 
     Electronic dtoToEntity(ElectronicDto electronicDto);
+    ElectronicDto entityToDto(Electronic electronic);
     List<ElectronicDto> electronicsToDto(List<Electronic> electronics);
-    Page<ElectronicDto> pageElectronicsToDto(Page<Electronic> electronics);
 }
