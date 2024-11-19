@@ -1,6 +1,5 @@
 package edu.rut.mongophd.dto;
 
-
 import lombok.Data;
 
 import java.time.LocalDate;

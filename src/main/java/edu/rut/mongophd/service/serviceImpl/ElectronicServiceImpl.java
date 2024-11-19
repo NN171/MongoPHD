@@ -53,17 +53,17 @@ public class ElectronicServiceImpl implements ElectronicService {
     }
 
     @Override
-    public List<ElectronicDto> getByAvailability(int page, int no, boolean isAvailable) {
+    public Page<ElectronicDto> getByAvailability(int page, int no, boolean isAvailable) {
         Pageable sortedByName = PageRequest.of(page, no, Sort.by("name").ascending());
         Page<Electronic> electronicPage = electronicRepository.getByAvailability(isAvailable, sortedByName);
-        return electronicMapper.electronicsToDto(electronicPage.getContent());
+        return electronicMapper.pageElectronicsToDto(electronicPage);
     }
 
     @Override
-    public List<ElectronicDto> getByCountry(int page, int no, String country) {
+    public Page<ElectronicDto> getByCountry(int page, int no, String country) {
         Pageable sortedByName = PageRequest.of(page, no, Sort.by("country").ascending());
         Page<Electronic> electronicPage = electronicRepository.getByCountryProducer(country, sortedByName);
-        return electronicMapper.electronicsToDto(electronicPage.getContent());
+        return electronicMapper.pageElectronicsToDto(electronicPage);
     }
 
     @Override
