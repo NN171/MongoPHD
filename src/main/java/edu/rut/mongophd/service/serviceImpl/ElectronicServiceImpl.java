@@ -25,8 +25,19 @@ public class ElectronicServiceImpl implements ElectronicService {
     }
 
     @Override
+    public Page<ElectronicDto> getElectronics(PageRequest pageRequest) {
+        Page<Electronic> page = electronicRepository.findAll(pageRequest);
+        return page.map(electronicMapper::entityToDto);
+    }
+
+    @Override
     public long countElectronics() {
         return electronicRepository.count();
+    }
+
+    @Override
+    public void deleteElectronic(String id) {
+        electronicRepository.deleteById(id);
     }
 
     @Override

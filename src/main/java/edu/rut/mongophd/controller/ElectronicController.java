@@ -3,6 +3,7 @@ package edu.rut.mongophd.controller;
 import edu.rut.mongophd.dto.ElectronicDto;
 import edu.rut.mongophd.service.ElectronicService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping(path = "api/v1/electronics")
+@RequestMapping(path = "/electronics")
 public class ElectronicController {
 
     private final ElectronicService electronicService;
@@ -19,43 +20,54 @@ public class ElectronicController {
         this.electronicService = electronicService;
     }
 
+    @GetMapping("/")
+        public ResponseEntity<Page<ElectronicDto>> getElectronics(@RequestParam(defaultValue = "0") int offset,
+                                                              @RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(electronicService.getElectronics(PageRequest.of(offset, limit)));
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Long> getCount() {
         return ResponseEntity.ok(electronicService.countElectronics());
     }
 
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<ElectronicDto> createElectronic(@RequestBody ElectronicDto electronicDto) {
         return ResponseEntity.ok(electronicService.addElectronic(electronicDto));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<ElectronicDto>> getByName(@RequestParam String name) {
+    @GetMapping("/{name}")
+    public ResponseEntity<List<ElectronicDto>> getByName(@PathVariable String name) {
         return ResponseEntity.ok(electronicService.getByName(name));
     }
 
-    @GetMapping("/")
+    @GetMapping("/brand")
     public ResponseEntity<List<ElectronicDto>> getByBrand(@RequestParam String brand) {
         return ResponseEntity.ok(electronicService.getByBrand(brand));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Page<ElectronicDto>> getByAvailability(@RequestParam int page,
-                                                  @RequestParam int no,
+    @GetMapping("/availability")
+    public ResponseEntity<Page<ElectronicDto>> getByAvailability(@RequestParam(defaultValue = "0") int offset,
+                                                  @RequestParam(defaultValue = "10") int limit,
                                                   @RequestParam boolean available) {
-        return ResponseEntity.ok(electronicService.getByAvailability(page, no, available));
+        return ResponseEntity.ok(electronicService.getByAvailability(offset, limit, available));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Page<ElectronicDto>> getByCountry(@RequestParam int page,
-                                                            @RequestParam int no,
+    @GetMapping("/country")
+    public ResponseEntity<Page<ElectronicDto>> getByCountry(@RequestParam int offset,
+                                                            @RequestParam int limit,
                                                             @RequestParam String country) {
-        return ResponseEntity.ok(electronicService.getByCountry(page, no, country));
+        return ResponseEntity.ok(electronicService.getByCountry(offset, limit, country));
     }
 
-    @GetMapping("/")
+    @GetMapping("/namebrand")
     public ResponseEntity<List<ElectronicDto>> getByNameAndBrand(@RequestParam String name,
                                                             @RequestParam String brand) {
         return ResponseEntity.ok(electronicService.getByNameAndBrand(name, brand));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteElectronic(@PathVariable String id) {
+        electronicService.deleteElectronic(id);
     }
 }
