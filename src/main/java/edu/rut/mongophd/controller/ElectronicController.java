@@ -26,7 +26,7 @@ public class ElectronicController {
         return ResponseEntity.ok(electronicService.getElectronic(id));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Page<Electronic>> getElectronics(@RequestParam(defaultValue = "0") int offset,
                                                            @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.ok(electronicService.getElectronics(PageRequest.of(offset, limit)));
@@ -43,7 +43,7 @@ public class ElectronicController {
         return ResponseEntity.ok(electronicService.countElectronics());
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ElectronicDto> createElectronic(@RequestBody ElectronicDto electronicDto) {
         return ResponseEntity.ok(electronicService.addElectronic(electronicDto));
     }
