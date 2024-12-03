@@ -19,10 +19,10 @@ public class Electronic {
     @Id
     private String id;
     @Field(name = "name")
-    @Indexed(sparse = true, direction = IndexDirection.ASCENDING, background = false)
+    @Indexed(sparse = true, direction = IndexDirection.ASCENDING)
     private String name;
 
-    @Indexed(sparse = true, direction = IndexDirection.ASCENDING, background = false)
+    @Indexed(sparse = true, direction = IndexDirection.ASCENDING)
     @Field(name = "brand")
     private String brand;
 
@@ -36,7 +36,7 @@ public class Electronic {
     private String category;
 
     @Field(name = "availability")
-    private String availability;
+    private boolean availability;
 
     @Field(name = "country_producer")
     private String countryProducer;

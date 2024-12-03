@@ -8,12 +8,13 @@ import java.util.List;
 @Data
 public class ElectronicDto {
 
+    private String id;
     private String name;
     private String brand;
-    private List<String> color;
+    private String color;
     private LocalDate guarantee;
     private String category;
-    private String availability;
+    private boolean availability;
     private String countryProducer;
     private double price;
 }

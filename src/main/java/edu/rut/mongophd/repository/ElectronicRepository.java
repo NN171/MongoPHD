@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface ElectronicRepository extends MongoRepository<Electronic, String> {
     Optional<List<Electronic>> getByName(String name);
 
+    Optional<Electronic> getById(String id);
+
     Optional<List<Electronic>> getByBrand(String brand);
 
     Page<Electronic> getByAvailability(boolean availability, Pageable pageable);

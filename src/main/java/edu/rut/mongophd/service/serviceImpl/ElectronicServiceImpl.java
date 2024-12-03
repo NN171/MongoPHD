@@ -5,29 +5,28 @@ import edu.rut.mongophd.mapper.ElectronicMapper;
 import edu.rut.mongophd.model.Electronic;
 import edu.rut.mongophd.repository.ElectronicRepository;
 import edu.rut.mongophd.service.ElectronicService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Arrays;
 
 @Service
 public class ElectronicServiceImpl implements ElectronicService {
 
     private final ElectronicRepository electronicRepository;
-    private final ElectronicMapper electronicMapper;
+    private final ModelMapper mapper;
 
-    public ElectronicServiceImpl(ElectronicRepository electronicRepository, ElectronicMapper electronicMapper) {
+    public ElectronicServiceImpl(ElectronicRepository electronicRepository,
+                                 ModelMapper mapper) {
         this.electronicRepository = electronicRepository;
-        this.electronicMapper = electronicMapper;
+        this.mapper = mapper;
     }
 
     @Override
-    public Page<ElectronicDto> getElectronics(PageRequest pageRequest) {
-        Page<Electronic> page = electronicRepository.findAll(pageRequest);
-        return page.map(electronicMapper::entityToDto);
+    public Page<Electronic> getElectronics(PageRequest pageRequest) {
+        return electronicRepository.findAll(pageRequest);
     }
 
     @Override
@@ -41,47 +40,41 @@ public class ElectronicServiceImpl implements ElectronicService {
     }
 
     @Override
-    public ElectronicDto addElectronic(ElectronicDto electronicDto) {
-        Electronic electronic = electronicMapper.dtoToEntity(electronicDto);
-        electronicRepository.save(electronic);
-        return electronicDto;
-    }
-
-    @Override
-    public List<ElectronicDto> getByName(String name) {
-        List<Electronic> electronics = electronicRepository.getByName(name)
-                .orElseThrow(() -> new RuntimeException("Name not found"));
-
-        return electronicMapper.electronicsToDto(electronics);
-    }
-
-    @Override
-    public List<ElectronicDto> getByBrand(String brand) {
-        List<Electronic> electronics =  electronicRepository.getByBrand(brand)
-                .orElseThrow(() -> new RuntimeException("Brand not found"));
-
-        return electronicMapper.electronicsToDto(electronics);
-    }
-
-    @Override
-    public Page<ElectronicDto> getByAvailability(int page, int no, boolean isAvailable) {
-        Pageable sortedByName = PageRequest.of(page, no, Sort.by("name").ascending());
-        Page<Electronic> electronicPage = electronicRepository.getByAvailability(isAvailable, sortedByName);
-        return electronicPage.map(electronicMapper::entityToDto);
-    }
-
-    @Override
-    public Page<ElectronicDto> getByCountry(int page, int no, String country) {
-        Pageable sortedByName = PageRequest.of(page, no, Sort.by("country").ascending());
-        Page<Electronic> electronicPage = electronicRepository.getByCountryProducer(country, sortedByName);
-        return electronicPage.map(electronicMapper::entityToDto);
-    }
-
-    @Override
-    public List<ElectronicDto> getByNameAndBrand(String name, String brand) {
-        List<Electronic> electronics = electronicRepository.getByNameAndBrand(name, brand)
+    public ElectronicDto getElectronic(String id) {
+        Electronic electronic = electronicRepository.getById(id)
                 .orElseThrow(() -> new RuntimeException("Not found"));
+        return mapper.map(electronic, ElectronicDto.class);
+    }
 
-        return electronicMapper.electronicsToDto(electronics);
+    @Override
+    public ElectronicDto updateElectronic(ElectronicDto electronicDto, String id) {
+        Electronic electronic = mapper.map(electronicDto, Electronic.class);
+
+        if (electronicDto.getColor() != null) {
+            electronic.setColor(Arrays.asList(electronicDto.getColor().substring(1, electronicDto.getColor().length()-1).split(", ")));
+        }
+
+        electronic.setId(id);
+        electronicRepository.save(electronic);
+
+        ElectronicDto updatedDto = mapper.map(electronic, ElectronicDto.class);
+        updatedDto.setColor(String.join(",", electronic.getColor()));
+        return mapper.map(electronic, ElectronicDto.class);
+    }
+
+    @Override
+    public ElectronicDto addElectronic(ElectronicDto electronicDto) {
+        Electronic electronic = mapper.map(electronicDto, Electronic.class);
+        electronicRepository.save(electronic);
+
+        if (electronicDto.getColor() != null) {
+            electronic.setColor(Arrays.asList(electronicDto.getColor().substring(1, electronicDto.getColor().length()-1).split(", ")));
+        }
+
+        electronicRepository.save(electronic);
+
+        ElectronicDto updatedDto = mapper.map(electronic, ElectronicDto.class);
+        updatedDto.setColor(String.join(",", electronic.getColor()));
+        return electronicDto;
     }
 }
