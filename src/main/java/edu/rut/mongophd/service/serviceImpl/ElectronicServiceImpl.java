@@ -6,6 +6,8 @@ import edu.rut.mongophd.model.Electronic;
 import edu.rut.mongophd.repository.ElectronicRepository;
 import edu.rut.mongophd.service.ElectronicService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,13 @@ public class ElectronicServiceImpl implements ElectronicService {
     }
 
     @Override
+    @Cacheable("getAll")
     public Page<Electronic> getElectronics(PageRequest pageRequest) {
         return electronicRepository.findAll(pageRequest);
     }
 
     @Override
+    @Cacheable("getCount")
     public long countElectronics() {
         return electronicRepository.count();
     }
@@ -40,6 +44,7 @@ public class ElectronicServiceImpl implements ElectronicService {
     }
 
     @Override
+    @Cacheable("getSingle")
     public ElectronicDto getElectronic(String id) {
         Electronic electronic = electronicRepository.getById(id)
                 .orElseThrow(() -> new RuntimeException("Not found"));
@@ -47,6 +52,7 @@ public class ElectronicServiceImpl implements ElectronicService {
     }
 
     @Override
+    @CacheEvict("update")
     public ElectronicDto updateElectronic(ElectronicDto electronicDto, String id) {
         Electronic electronic = mapper.map(electronicDto, Electronic.class);
 
@@ -63,6 +69,7 @@ public class ElectronicServiceImpl implements ElectronicService {
     }
 
     @Override
+    @Cacheable("create")
     public ElectronicDto addElectronic(ElectronicDto electronicDto) {
         Electronic electronic = mapper.map(electronicDto, Electronic.class);
         electronicRepository.save(electronic);
