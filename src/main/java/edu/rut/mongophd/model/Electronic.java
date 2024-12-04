@@ -8,13 +8,14 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 @Document(collection = "store")
 @Data
 @NoArgsConstructor
-public class Electronic {
+public class Electronic implements Serializable {
 
     @Id
     private String id;
